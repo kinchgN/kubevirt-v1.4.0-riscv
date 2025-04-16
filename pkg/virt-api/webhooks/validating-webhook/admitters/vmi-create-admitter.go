@@ -130,6 +130,10 @@ func (admitter *VMICreateAdmitter) Admit(_ context.Context, ar *admissionv1.Admi
 		// Check if there is any unsupported setting if the arch is Arm64
 		causes = append(causes, webhooks.ValidateVirtualMachineInstanceArm64Setting(k8sfield.NewPath("spec"), &vmi.Spec)...)
 	}
+	if webhooks.IsRISCV64(&vmi.Spec) {
+		// Check if there is any unsupported setting if the arch is RISC-V
+		causes = append(causes, webhooks.ValidateVirtualMachineInstanceRISCV64Setting(k8sfield.NewPath("spec"), &vmi.Spec)...)
+	}
 	if len(causes) > 0 {
 		return webhookutils.ToAdmissionResponse(causes)
 	}
